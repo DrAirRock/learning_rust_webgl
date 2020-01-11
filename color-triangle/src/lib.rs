@@ -1,7 +1,6 @@
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use web_sys::{WebGlProgram, WebGlRenderingContext, WebGlShader};
-use js_sys;
 
 #[wasm_bindgen(start)]
 pub fn start() -> Result<(), JsValue> {
@@ -9,13 +8,10 @@ pub fn start() -> Result<(), JsValue> {
     let document = web_sys::window().unwrap().document().unwrap();
     // Get the canvas 
     let canvas = document.get_element_by_id("canvas").unwrap();
-    // Shadow canvas (get the html canvas element
+    // Shadow canvas (get the html canvas element)
     let canvas: web_sys::HtmlCanvasElement = canvas.dyn_into::<web_sys::HtmlCanvasElement>()?;
     
-    // init web gl by getting webgl 
-    // Rust is awesome some the ? will pass the error
-    // up in this case to javascript I think 
-    // so if they don't have webgl ur good
+    // init webgl
     let context = canvas
         .get_context("webgl")?
         .unwrap()
@@ -57,7 +53,7 @@ pub fn start() -> Result<(), JsValue> {
 
     //
     // create the buffer
-    // Expects it as f32 
+    // expects it as f32 
     //
     let vertices: [f32; 15] = 
         [ // X, Y,       R, G, B
@@ -66,7 +62,7 @@ pub fn start() -> Result<(), JsValue> {
             0.5, -0.5,   0.1, 1.0, 0.6
         ];
    
-    // webGL needs a buffer type thing
+    // webGL needs a buffer for the triangle 
     let triangle_buffer = context.create_buffer().ok_or("failed to create buffer")?; 
     context.bind_buffer(WebGlRenderingContext::ARRAY_BUFFER, Some(&triangle_buffer)); 
  
@@ -90,8 +86,6 @@ pub fn start() -> Result<(), JsValue> {
     }
     // Think we're safe now 
     
-    // position attribute location 
-    // Handle to thea attriute 
     let pos_attrib_loc = context.get_attrib_location(&program, "vertPosition") as u32;
     let color_attrib_loc = context.get_attrib_location(&program, "vertColor") as u32;
     
@@ -123,7 +117,6 @@ pub fn start() -> Result<(), JsValue> {
     Ok(())
 }
 
-// okay so we need to actually compile stuff...
 pub fn compile_shader(
     context: &WebGlRenderingContext,
     shader_type: u32,
