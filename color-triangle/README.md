@@ -3,6 +3,7 @@
 You can build the example locally with:
 
 ```
+$ npm install 
 $ npm run serve
 ```
 
